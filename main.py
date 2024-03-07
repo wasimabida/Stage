@@ -1,7 +1,11 @@
+
 from scraping.scraping import scrape_facebook_posts_with_hashtag
+from kafka.producer import send_to_kafka
+from kafka.consumer import consume_from_kafka_and_save_to_csv
 from saving.save_csv import save_to_csv
 from fast_api.app import app
 import uvicorn 
+
 
 if __name__ == "__main__":
     email = input("Enter your Facebook email: ")
@@ -11,6 +15,12 @@ if __name__ == "__main__":
     # Démarrer le scraping
     pubs = scrape_facebook_posts_with_hashtag(email, password, hashtag)
     print(pubs)
+
+    # Send to Kafka
+    send_to_kafka(pubs)
+
+    # Consume from Kafka and save to CSV
+    consume_from_kafka_and_save_to_csv()
 
     # Enregistrer dans CSV
     if pubs:
